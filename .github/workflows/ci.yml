@@ -26,6 +26,12 @@ jobs:
           use-mamba: true
           python-version: ${{ matrix.PYTHON_VERSION }}
           environment-file: environment.yml
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: minio
+          aws-secret-access-key: minio-storage
+          aws-region: us-east-1
       - name: Run the unittests
         shell: bash -x -l {0}
         run: |
