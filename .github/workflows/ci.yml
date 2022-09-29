@@ -18,6 +18,9 @@ jobs:
           POSTGRES_USER: minimalkv_test
     env:
       SIMPLEKV_CI: 1
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: miniostorage
+      AWS_DEFAULT_REGION: us-east-1
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
@@ -26,12 +29,6 @@ jobs:
           use-mamba: true
           python-version: ${{ matrix.PYTHON_VERSION }}
           environment-file: environment.yml
-      - name: Setup AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: minio
-          aws-secret-access-key: minio-storage
-          aws-region: us-east-1
       - name: Run the unittests
         shell: bash -x -l {0}
         run: |
