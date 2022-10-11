@@ -24,3 +24,4 @@ dependencies:
   - setuptools-scm
   - uritools
   - sphinx
+  - pyarrow
