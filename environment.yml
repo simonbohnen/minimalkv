@@ -24,8 +24,9 @@ dependencies:
   - pytest-xdist  
   - python
   - redis-py
+  - s3fs>=2022.10.0
   - setuptools-scm
   - six
-  - sphinx  
+  - sphinx
   - sqlalchemy
   - uritools
