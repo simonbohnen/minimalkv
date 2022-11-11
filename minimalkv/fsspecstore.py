@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from fsspec import AbstractFileSystem
     from fsspec.spec import AbstractBufferedFile
 
-from minimalkv import KeyValueStore
+from minimalkv import CopyMixin, KeyValueStore
 from minimalkv.net._net_common import LAZY_PROPERTY_ATTR_PREFIX, lazy_property
 
 # The complete path of the key is structured as follows:
@@ -78,7 +78,7 @@ class FSSpecStoreEntry(io.BufferedIOBase):
         return self._file.readable()
 
 
-class FSSpecStore(KeyValueStore):
+class FSSpecStore(KeyValueStore, CopyMixin):
     """A KeyValueStore that uses an fsspec AbstractFileSystem to store the key-value pairs."""
 
     def __init__(self, prefix: str = "", mkdir_prefix: bool = True):
@@ -156,6 +156,13 @@ class FSSpecStore(KeyValueStore):
 
     def _has_key(self, key: str) -> bool:
         return self._fs.exists(f"{self.prefix}{key}")
+
+    def _copy(self, key: str, new_key: str) -> str:
+        try:
+            self._fs.cp_file(f"{self.prefix}{key}", f"{self.prefix}{new_key}")
+        except FileNotFoundError:
+            raise KeyError(key)
+        return new_key
 
     def _create_filesystem(self) -> "AbstractFileSystem":
         # To be implemented by inheriting classes.
